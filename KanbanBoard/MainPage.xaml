@@ -11,8 +11,8 @@
         <kanbanboard:MainPageViewModel/>
     </ContentPage.BindingContext>
     <StackLayout>
-        <CarouselView ItemsSource="{Binding Columns}"
-                      x:Name="Board"
+        <CarouselView x:Name="Board"
+                      ItemsSource="{Binding Columns}"                      
                       PeekAreaInsets="30">
             <CarouselView.ItemsLayout>
                 <LinearItemsLayout Orientation="Horizontal"
@@ -41,14 +41,6 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <ImageButton Grid.RowSpan="2"
-                                               Grid.Column="1"
-                                               BackgroundColor="Red"
-                                               Aspect="AspectFill"
-                                               HeightRequest="60"
-                                               WidthRequest="60"
-                                               Command="{Binding BindingContext.DeleteCard, Source={x:Reference Board}}"
-                                               CommandParameter="{Binding Id}"/>
                                         <Label Grid.Column="0"
                                                Text="{Binding Name}"
                                                FontAttributes="Bold" />
@@ -57,6 +49,14 @@
                                                Text="{Binding Description}"
                                                FontAttributes="Italic"
                                                VerticalOptions="End" />
+                                        <ImageButton Grid.RowSpan="2"
+                                               Grid.Column="1"
+                                               BackgroundColor="Red"
+                                               Aspect="AspectFill"
+                                               HeightRequest="60"
+                                               WidthRequest="60"
+                                               Command="{Binding BindingContext.DeleteCard, Source={x:Reference Board}}"
+                                               CommandParameter="{Binding .}"/>
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
@@ -68,6 +68,10 @@
                 </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
+        <IndicatorView ItemsSourceBy="Board"
+                       IndicatorColor="LightGray"
+                       SelectedIndicatorColor="DarkGray"
+                       HorizontalOptions="Center" />
         <Button Text="Add new column"
                 Command="{Binding AddColumn}"/>
     </StackLayout>

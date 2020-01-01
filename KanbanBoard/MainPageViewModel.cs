@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
 using MvvmHelpers;
 using Xamarin.Forms;
 
@@ -11,24 +10,46 @@ namespace KanbanBoard
     public class MainPageViewModel : BaseViewModel
     {
         private ObservableCollection<Column> columns;
-        private ObservableCollection<Card> cards = new ObservableCollection<Card>();
 
         public MainPageViewModel()
         {
-            cards.Add(new Card() { Name = "Card 1", Description = "Description for card 1", Order = 0 , ColumnId = 0});
-            cards.Add(new Card() { Name = "Card 2", Description = "Description for card 2", Order = 1 , ColumnId = 0});
-            cards.Add(new Card() { Name = "Card 1", Description = "Description for card 1", Order = 0 , ColumnId = 1});
-            cards.Add(new Card() { Name = "Card 2", Description = "Description for card 2", Order = 1 , ColumnId=1});            
-            var columnsCollection = new ObservableCollection<Column>();
-            columnsCollection.Add(new Column() { Id=0,Name = "ToDo", Order = 0, WIP = 0, Cards = cards.Where(c => c.ColumnId == 0).ToObservableCollection() });
-            columnsCollection.Add(new Column() { Id=1, Name = "In Progress", Order = 1, WIP = 5, Cards = cards.Where(c => c.ColumnId == 1).ToObservableCollection() });
-            columnsCollection.Add(new Column() { Id=2, Name = "Done", Order = 2, WIP = 0, Cards = cards.Where(c => c.ColumnId == 2).ToObservableCollection() });
-            Columns = columnsCollection;
+            UpdateCollection();
         }
 
-        public ICommand AddColumn => new Command(() => Columns.Add(new Column() { Name="New column", WIP=0}));
-        public ICommand AddCard => new Command<int>((columnId) => Columns.First(c=>c.Id == columnId).Cards.Add(new Card() { Name = "New card" }));
-        public ICommand DeleteCard => new Command<int>((cardId) => cards.Remove(cards.First(c=>c.Id == cardId)));
+        public ICommand AddColumn => new Command(() =>
+        {
+            var column = new Column() { Name = "New column", Order=columns.Count+1 };
+            using (ApplicationContext db = new ApplicationContext(App.dbPath))
+            {
+                db.Columns.Add(column);
+                db.SaveChanges();
+            }
+            UpdateCollection();
+        });
+
+        public ICommand AddCard => new Command<int>((columnId) =>
+        {
+            using (ApplicationContext db = new ApplicationContext(App.dbPath))
+            {
+                var column = db.Columns.Include(c=>c.Cards).First(c => c.Id == columnId);
+                if (column.WIP > column.Cards.Count)
+                {
+                    db.Cards.Add(new Card() { Name = "New card", ColumnId = columnId, Order = column.Cards.Count + 1 });
+                    db.SaveChanges();
+                    UpdateCollection();
+                }
+            }
+        });
+
+        public ICommand DeleteCard => new Command<Card>((card) =>
+        {
+            using (ApplicationContext db = new ApplicationContext(App.dbPath))
+            {
+                db.Cards.Remove(card);
+                db.SaveChanges();
+            }
+            UpdateCollection();
+        });
 
         public ObservableCollection<Column> Columns
         {
@@ -39,34 +60,19 @@ namespace KanbanBoard
                 OnPropertyChanged(nameof(Columns));
             }
         }
-    }
 
-
-
-    public class Card
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int Order { get; set; }
-        public int ColumnId { get; set; }
-        public Column Column { get; set; }
-    }
-
-    public class Column
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int WIP { get; set; }
-        public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
-        public int Order { get; set; }
-    }
-
-    public static class Extensions
-    {
-        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> col)
+        private void UpdateCollection()
         {
-            return new ObservableCollection<T>(col);
+            using (ApplicationContext db = new ApplicationContext(App.dbPath))
+            {
+                Columns = db.Columns.Include(c=>c.Cards).OrderBy(c=>c.Order).ToList().Select(c => OrderCards(c)).ToObservableCollection();
+            }
+        }
+
+        private Column OrderCards(Column c)
+        {
+            c.Cards = c.Cards.OrderBy(card => card.Order).ToList();
+            return c;
         }
     }
 }
