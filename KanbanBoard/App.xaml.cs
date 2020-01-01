@@ -9,6 +9,10 @@ namespace KanbanBoard
         public App()
         {
             InitializeComponent();
+            Device.SetFlags(new[] {
+                "SwipeView_Experimental",
+                "IndicatorView_Experimental"
+            });
 
             MainPage = new MainPage();
         }
