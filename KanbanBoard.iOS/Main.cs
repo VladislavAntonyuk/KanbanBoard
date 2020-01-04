@@ -1,12 +1,12 @@
-﻿using UIKit;
-
-namespace KanbanBoard.iOS
+﻿namespace KanbanBoard.iOS
 {
-    public class Application
-    {
-        static void Main(string[] args)
-        {
-            UIApplication.Main(args, null, nameof(AppDelegate));
-        }
-    }
+	using UIKit;
+
+	public class Application
+	{
+		private static void Main(string[] args)
+		{
+			UIApplication.Main(args, null, nameof(AppDelegate));
+		}
+	}
 }

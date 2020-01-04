@@ -1,7 +1,7 @@
 ﻿namespace KanbanBoard
 {
-    public interface IPath
-    {
-        string GetDatabasePath(string filename);
-    }
+	public interface IPath
+	{
+		string GetDatabasePath(string filename);
+	}
 }
