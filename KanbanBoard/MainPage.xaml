@@ -29,143 +29,159 @@
 	<ContentPage.BindingContext>
 		<kanbanboard:MainPageViewModel />
 	</ContentPage.BindingContext>
-	<StackLayout BackgroundColor="{DynamicResource BoardBackgroundColor}">
-		<Label
-			FontSize="{StaticResource BoardTitleSize}"
-			HorizontalOptions="Center"
-			Text="Test project name"
-			TextColor="{DynamicResource BoardTitleFontColor}" />
-		<CarouselView
-			x:Name="Board"
-			EmptyView="No columns to display"
-			ItemsSource="{Binding Columns}"
-			PeekAreaInsets="10">
-			<CarouselView.ItemsLayout>
-				<LinearItemsLayout ItemSpacing="10" Orientation="Horizontal" />
-			</CarouselView.ItemsLayout>
-			<CarouselView.ItemTemplate>
-				<DataTemplate>
-					<Frame Padding="0" CornerRadius="10">
-						<Frame.Triggers>
-							<DataTrigger
-								Binding="{Binding IsWipReached}"
-								TargetType="Frame"
-								Value="True">
-								<Setter Property="BackgroundColor" Value="{DynamicResource ColumnWipReachedBackgroundColor}" />
-							</DataTrigger>
-							<DataTrigger
-								Binding="{Binding IsWipReached}"
-								TargetType="Frame"
-								Value="False">
-								<Setter Property="BackgroundColor" Value="{DynamicResource ColumnBackgroundColor}" />
-							</DataTrigger>
-						</Frame.Triggers>
-						<StackLayout Margin="10">
-							<StackLayout Margin="10" Orientation="Horizontal">
-								<Label
-									FontAttributes="Bold"
-									FontSize="{StaticResource ColumnTitleSize}"
-									HorizontalOptions="Start"
-									Text="{Binding Column.Name}"
-									VerticalOptions="Center" />
-								<Label
-									FontSize="{StaticResource ColumnTitleSize}"
-									HorizontalOptions="CenterAndExpand"
-									VerticalOptions="Center">
-									<Label.FormattedText>
-										<FormattedString>
-											<Span Text="{Binding Column.Cards.Count}" />
-											<Span>/</Span>
-											<Span Text="{Binding Column.Wip}" />
-										</FormattedString>
-									</Label.FormattedText>
-								</Label>
-								<ImageButton
-									Command="{Binding BindingContext.DeleteColumn, Source={x:Reference Board}}"
-									CommandParameter="{Binding .}"
-									HorizontalOptions="EndAndExpand"
-									VerticalOptions="Center">
-									<ImageButton.Source>
-										<FontImageSource
-											FontFamily="{StaticResource FontAwesomeSolid}"
-											Glyph="&#xf2ed;"
-											Size="{StaticResource ColumnTitleSize}"
-											Color="{DynamicResource FontColor}" />
-									</ImageButton.Source>
-								</ImageButton>
-							</StackLayout>
-							<CollectionView EmptyView="No cards to display" ItemsSource="{Binding Column.Cards}">
-								<CollectionView.ItemsLayout>
-									<LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
-								</CollectionView.ItemsLayout>
-								<CollectionView.ItemTemplate>
-									<DataTemplate>
-										<Frame
-											Margin="5,0"
-											Padding="0"
-											BackgroundColor="{DynamicResource CardBackgroundColor}"
-											CornerRadius="10">
-
-											<Grid Margin="10">
-												<Grid.RowDefinitions>
-													<RowDefinition Height="Auto" />
-													<RowDefinition Height="Auto" />
-												</Grid.RowDefinitions>
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="*" />
-													<ColumnDefinition Width="Auto" />
-												</Grid.ColumnDefinitions>
-												<Label
-													Grid.Column="0"
-													FontAttributes="Bold"
-													FontSize="{StaticResource CardTitleSize}"
-													Text="{Binding Name}" />
-												<Label
-													Grid.Row="1"
-													Grid.Column="0"
-													FontSize="{StaticResource CardDescriptionSize}"
-													Text="{Binding Description}"
-													VerticalOptions="End" />
-												<ImageButton
-													Grid.Row="0"
-													Grid.RowSpan="2"
-													Grid.Column="1"
-													Command="{Binding BindingContext.DeleteCard, Source={x:Reference Board}}"
-													CommandParameter="{Binding .}"
-													WidthRequest="{StaticResource CardTitleSize}"
-													HeightRequest="{StaticResource CardTitleSize}"
-													HorizontalOptions="EndAndExpand">
-													<ImageButton.Source>
-														<FontImageSource
-															FontFamily="{StaticResource FontAwesomeSolid}"
-															Glyph="&#xf2ed;"
-															Size="{StaticResource CardTitleSize}"
-															Color="{DynamicResource FontColor}" />
-													</ImageButton.Source>
-												</ImageButton>
-											</Grid>
-										</Frame>
-									</DataTemplate>
-								</CollectionView.ItemTemplate>
-							</CollectionView>
-							<Button
-								BackgroundColor="Transparent"
-								Command="{Binding BindingContext.AddCard, Source={x:Reference Board}}"
-								CommandParameter="{Binding Column.Id}"
-								Text="Add new card" />
-						</StackLayout>
-					</Frame>
-				</DataTemplate>
-			</CarouselView.ItemTemplate>
-		</CarouselView>
-		<IndicatorView
-			HorizontalOptions="Center"
-			IndicatorColor="White"
-			ItemsSourceBy="Board"
-			SelectedIndicatorColor="Black" />
-		<Button
-			BackgroundColor="Transparent"
-			Command="{Binding AddColumn}"
-			Text="Add new column" />
-	</StackLayout>
+		<RefreshView Command="{Binding RefreshCommand}"
+		             IsRefreshing="{Binding IsBusy}">
+			<StackLayout BackgroundColor="{DynamicResource BoardBackgroundColor}">
+				<Label
+					FontSize="{StaticResource BoardTitleSize}"
+					HorizontalOptions="Center"
+					Text="Test project name"
+					TextColor="{DynamicResource BoardTitleFontColor}" />
+					<CarouselView
+					x:Name="Board"
+					IndicatorView="Indicator"
+					EmptyView="No columns to display"
+					ItemsSource="{Binding Columns}"
+					Position="{Binding Position}"
+					Loop="False"
+					PeekAreaInsets="10">
+						<CarouselView.ItemsLayout>
+							<LinearItemsLayout ItemSpacing="10" Orientation="Horizontal" />
+						</CarouselView.ItemsLayout>
+						<CarouselView.ItemTemplate>
+							<DataTemplate>
+								<Frame Padding="0" CornerRadius="10">
+									<Frame.GestureRecognizers>
+										<DropGestureRecognizer AllowDrop="True"
+									                       DropCommand="{Binding BindingContext.DropCommand, Source={x:Reference Board}}"
+									                       DropCommandParameter="{Binding .}"/>
+									</Frame.GestureRecognizers>
+									<Frame.Triggers>
+										<DataTrigger
+										Binding="{Binding IsWipReached}"
+										TargetType="Frame"
+										Value="True">
+											<Setter Property="BackgroundColor" Value="{DynamicResource ColumnWipReachedBackgroundColor}" />
+										</DataTrigger>
+										<DataTrigger
+										Binding="{Binding IsWipReached}"
+										TargetType="Frame"
+										Value="False">
+											<Setter Property="BackgroundColor" Value="{DynamicResource ColumnBackgroundColor}" />
+										</DataTrigger>
+									</Frame.Triggers>
+									<StackLayout Margin="10">
+										<StackLayout Margin="10" Orientation="Horizontal">
+											<Label
+											FontAttributes="Bold"
+											FontSize="{StaticResource ColumnTitleSize}"
+											HorizontalOptions="Start"
+											Text="{Binding Column.Name}"
+											VerticalOptions="Center" />
+											<Label
+											FontSize="{StaticResource ColumnTitleSize}"
+											HorizontalOptions="CenterAndExpand"
+											VerticalOptions="Center">
+												<Label.FormattedText>
+													<FormattedString>
+														<Span Text="{Binding Column.Cards.Count}" />
+														<Span>/</Span>
+														<Span Text="{Binding Column.Wip}" />
+													</FormattedString>
+												</Label.FormattedText>
+											</Label>
+											<ImageButton
+											Command="{Binding BindingContext.DeleteColumn, Source={x:Reference Board}}"
+											CommandParameter="{Binding .}"
+											HorizontalOptions="EndAndExpand"
+											VerticalOptions="Center">
+												<ImageButton.Source>
+													<FontImageSource
+													FontFamily="{StaticResource FontAwesomeSolid}"
+													Glyph="&#xf2ed;"
+													Size="{StaticResource ColumnTitleSize}"
+													Color="{DynamicResource FontColor}" />
+												</ImageButton.Source>
+											</ImageButton>
+										</StackLayout>
+										<CollectionView EmptyView="No cards to display" ItemsSource="{Binding Column.Cards}">
+											<CollectionView.ItemsLayout>
+												<LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
+											</CollectionView.ItemsLayout>
+											<CollectionView.ItemTemplate>
+												<DataTemplate>
+													<Frame
+													Margin="5,0"
+													Padding="0"
+													BackgroundColor="{DynamicResource CardBackgroundColor}"
+													CornerRadius="10">
+														<Frame.GestureRecognizers>
+															<DragGestureRecognizer CanDrag="True"
+																			   DragStartingCommand="{Binding BindingContext.DragStartingCommand, Source={x:Reference Board}}"
+																			   DragStartingCommandParameter="{Binding .}"
+																			   DropCompletedCommand="{Binding BindingContext.DropCompletedCommand, Source={x:Reference Board}}"/>
+														</Frame.GestureRecognizers>
+														<Grid Margin="10">
+															<Grid.RowDefinitions>
+																<RowDefinition Height="Auto" />
+																<RowDefinition Height="Auto" />
+															</Grid.RowDefinitions>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition Width="*" />
+																<ColumnDefinition Width="Auto" />
+															</Grid.ColumnDefinitions>
+															<Label
+															Grid.Column="0"
+															FontAttributes="Bold"
+															FontSize="{StaticResource CardTitleSize}"
+															Text="{Binding Name}" />
+															<Label
+															Grid.Row="1"
+															Grid.Column="0"
+															FontSize="{StaticResource CardDescriptionSize}"
+															Text="{Binding Description}"
+															VerticalOptions="End" />
+															<ImageButton
+															Grid.Row="0"
+															Grid.RowSpan="2"
+															Grid.Column="1"
+															Command="{Binding BindingContext.DeleteCard, Source={x:Reference Board}}"
+															CommandParameter="{Binding .}"
+															WidthRequest="{StaticResource CardTitleSize}"
+															HeightRequest="{StaticResource CardTitleSize}"
+															HorizontalOptions="EndAndExpand">
+																<ImageButton.Source>
+																	<FontImageSource
+																	FontFamily="{StaticResource FontAwesomeSolid}"
+																	Glyph="&#xf2ed;"
+																	Size="{StaticResource CardTitleSize}"
+																	Color="{DynamicResource FontColor}" />
+																</ImageButton.Source>
+															</ImageButton>
+														</Grid>
+													</Frame>
+												</DataTemplate>
+											</CollectionView.ItemTemplate>
+										</CollectionView>
+										<Button
+										BackgroundColor="Transparent"
+										Command="{Binding BindingContext.AddCard, Source={x:Reference Board}}"
+										CommandParameter="{Binding Column.Id}"
+										Text="Add new card" />
+									</StackLayout>
+								</Frame>
+							</DataTemplate>
+						</CarouselView.ItemTemplate>
+					</CarouselView>
+					<IndicatorView
+						x:Name="Indicator"
+						HorizontalOptions="Center"
+						IndicatorColor="White"
+						SelectedIndicatorColor="Black" />
+				<Button
+					BackgroundColor="Transparent"
+					Command="{Binding AddColumn}"
+					Text="Add new column" />
+			</StackLayout>
+		</RefreshView>
 </ContentPage>
