@@ -19,5 +19,15 @@
 		{
 			optionsBuilder.UseSqlite($"Filename={_databasePath}");
 		}
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<Column>()
+			            .HasMany(x=>x.Cards)
+						.WithOne(x => x.Column)
+						.HasForeignKey(x => x.ColumnId)
+						.OnDelete(DeleteBehavior.Cascade);
+		}
 	}
 }

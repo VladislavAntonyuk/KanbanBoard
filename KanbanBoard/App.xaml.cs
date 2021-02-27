@@ -13,11 +13,6 @@
 		public App()
 		{
 			InitializeComponent();
-			Device.SetFlags(new[]
-			{
-				"SwipeView_Experimental",
-				"IndicatorView_Experimental"
-			});
 			DbPath = DependencyService.Get<IPath>().GetDatabasePath(DbFileName);
 			using (var db = new ApplicationContext(DbPath))
 			{
@@ -32,26 +27,26 @@
 		{
 			using (var db = new ApplicationContext(DbPath))
 			{
-				var todoColumn = new Column {Name = "ToDo", Order = 1};
-				var inProgressColumn = new Column {Name = "In Progress", Order = 2, Wip = 3};
 				if (!db.Columns.Any())
 				{
+					var todoColumn = new Column { Name = "ToDo", Order = 1 };
+					var inProgressColumn = new Column { Name = "In Progress", Order = 2, Wip = 3 };
 					db.Columns.Add(todoColumn);
 					db.Columns.Add(inProgressColumn);
-					db.Columns.Add(new Column {Name = "Done", Order = 3});
+					db.Columns.Add(new Column { Name = "Done", Order = 3 });
 
 					db.SaveChanges();
-				}
 
-				if (!db.Cards.Any())
-				{
 					db.Cards.Add(new Card
-						{Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn});
+					{ Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn });
 					db.Cards.Add(new Card
-						{Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn});
+					{ Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn });
 					db.Cards.Add(new Card
 					{
-						Name = "Card 3", Description = "Description for card 3", Order = 1, Column = inProgressColumn
+						Name = "Card 3",
+						Description = "Description for card 3",
+						Order = 1,
+						Column = inProgressColumn
 					});
 
 					db.SaveChanges();

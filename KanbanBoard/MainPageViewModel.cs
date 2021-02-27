@@ -13,11 +13,45 @@
 	public class MainPageViewModel : BaseViewModel
 	{
 		private ObservableCollection<ColumnInfo> _columns;
+		private int _position;
+		private Card _dragCard;
 
 		public MainPageViewModel()
 		{
-			UpdateCollection();
+			RefreshCommand.Execute(null);
 		}
+
+		public ICommand RefreshCommand => new Command(UpdateCollection);
+
+		public ICommand DropCommand => new Command<ColumnInfo>(columnInfo =>
+		{
+			if (_dragCard is not null && columnInfo.Column.Cards.Count < columnInfo.Column.Wip)
+			{
+				using (var db = new ApplicationContext(App.DbPath))
+				{
+					var cardToUpdate = db.Cards.FirstOrDefault(x => x.Id == _dragCard.Id);
+					if (cardToUpdate is not null)
+					{
+						cardToUpdate.ColumnId = columnInfo.Column.Id;
+						db.Cards.Update(cardToUpdate);
+						db.SaveChanges();
+					}
+				}
+				
+				UpdateCollection();
+				Position = columnInfo.Index;
+			}
+		});
+
+		public ICommand DragStartingCommand => new Command<Card>(card =>
+		{
+			_dragCard = card;
+		});
+
+		public ICommand DropCompletedCommand => new Command(() =>
+		{
+			_dragCard = null;
+		});
 
 		public ICommand AddColumn => new Command(async () =>
 		{
@@ -54,7 +88,7 @@
 			using (var db = new ApplicationContext(App.DbPath))
 			{
 				var column = db.Columns.Include(c => c.Cards).First(c => c.Id == columnId);
-				var columnInfo = new ColumnInfo(column);
+				var columnInfo = new ColumnInfo(0, column);
 				if (columnInfo.IsWipReached)
 				{
 					return;
@@ -116,30 +150,35 @@
 		public ObservableCollection<ColumnInfo> Columns
 		{
 			get => _columns;
-			set
-			{
-				_columns = value;
-				OnPropertyChanged(nameof(Columns));
-			}
+			set => SetProperty(ref _columns, value);
+		}
+
+		public int Position
+		{
+			get => _position;
+			set => SetProperty(ref _position, value);
 		}
 
 		private void UpdateCollection()
 		{
-			// This method can be used to sync local changes with remote database
+			IsBusy = true;
 			using (var db = new ApplicationContext(App.DbPath))
 			{
 				Columns = db.Columns.Include(c => c.Cards)
-					.OrderBy(c => c.Order)
-					.ToList()
-					.Select(OrderCards)
-					.ToObservableCollection();
+				                                        .OrderBy(c => c.Order)
+				                                        .ToList()
+				                                        .Select(OrderCards)
+				                                        .ToObservableCollection();
+				Position = 0;
 			}
-		}
 
-		private static ColumnInfo OrderCards(Column c)
+			IsBusy = false;
+		}
+		
+		private static ColumnInfo OrderCards(Column c, int columnNumber)
 		{
 			c.Cards = c.Cards.OrderBy(card => card.Order).ToList();
-			return new ColumnInfo(c);
+			return new ColumnInfo(columnNumber, c);
 		}
 
 		private static Task<string> UserPromptTask(string title, string message, Keyboard keyboard)
