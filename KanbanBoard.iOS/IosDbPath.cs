@@ -1,19 +1,18 @@
-﻿using KanbanBoard.iOS;
+﻿using System;
+using System.IO;
+using KanbanBoard.iOS;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(IosDbPath))]
 
 namespace KanbanBoard.iOS
 {
-	using System;
-	using System.IO;
-
-	public class IosDbPath : IPath
-	{
-		public string GetDatabasePath(string sqliteFilename)
-		{
-			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library",
-				sqliteFilename);
-		}
-	}
+    public class IosDbPath : IPath
+    {
+        public string GetDatabasePath(string sqliteFilename)
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library",
+                sqliteFilename);
+        }
+    }
 }
