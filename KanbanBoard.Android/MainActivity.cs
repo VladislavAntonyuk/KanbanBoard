@@ -31,11 +31,5 @@ namespace KanbanBoard.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-
-        public override void OnBackPressed()
-        {
-            base.OnBackPressed();
-            FinishAndRemoveTask();
-        }
     }
 }
