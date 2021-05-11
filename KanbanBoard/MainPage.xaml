@@ -42,6 +42,12 @@
                 TextColor="{DynamicResource BoardTitleFontColor}" />
 
             <Button
+                VerticalOptions="Center"
+                BackgroundColor="Transparent"
+                Command="{Binding RefreshCommand}"
+                Text="Refresh" />
+            
+            <Button
                 x:Name="ResetButton"
                 VerticalOptions="Center"
                 BackgroundColor="Transparent"

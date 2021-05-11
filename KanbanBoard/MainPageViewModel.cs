@@ -114,9 +114,8 @@ namespace KanbanBoard
                 await using var db = new ApplicationContext(App.DbPath);
                 db.Cards.Remove(card);
                 await db.SaveChangesAsync();
+                UpdateCollection();
             }
-
-            UpdateCollection();
         });
 
         public ICommand DeleteColumn => new Command<ColumnInfo>(async columnInfo =>
@@ -154,11 +153,6 @@ namespace KanbanBoard
             set => SetProperty(ref _position, value);
         }
 
-        private static Task<bool> AlertAsync(string title, string message)
-        {
-            return Application.Current.MainPage.DisplayAlert(title, message, "Yes", "No");
-        }
-
         private void UpdateCollection()
         {
             IsBusy = true;
@@ -179,6 +173,11 @@ namespace KanbanBoard
         {
             c.Cards = c.Cards.OrderBy(card => card.Order).ToList();
             return new ColumnInfo(columnNumber, c);
+        }
+
+        private static Task<bool> AlertAsync(string title, string message)
+        {
+            return Application.Current.MainPage.DisplayAlert(title, message, "Yes", "No");
         }
 
         private static Task<string> UserPromptAsync(string title, string message, Keyboard keyboard)
