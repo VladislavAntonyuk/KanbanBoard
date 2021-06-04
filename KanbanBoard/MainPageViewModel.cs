@@ -6,10 +6,9 @@ using System.Windows.Input;
 using KanbanBoard.Db;
 using KanbanBoard.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 using MvvmHelpers;
-using Xamarin.CommunityToolkit.Extensions;
-using Xamarin.CommunityToolkit.UI.Views.Options;
-using Xamarin.Forms;
 
 namespace KanbanBoard
 {
@@ -187,29 +186,32 @@ namespace KanbanBoard
 
         private static Task<bool> SnackbarAsync(string title, string buttonText, Func<Task> task)
         {
-            return Application.Current.MainPage.DisplaySnackBarAsync(title, buttonText, task, TimeSpan.FromSeconds(3));
+            return Task.FromResult(true);
+            //return Application.Current.MainPage.DisplaySnackBarAsync(title, buttonText, task, TimeSpan.FromSeconds(3));
         }
 
         private static Task ToastAsync(string title)
         {
-            return Application.Current.MainPage.DisplayToastAsync(title, 3500);
+            return Task.CompletedTask;
+            //return Application.Current.MainPage.DisplayToastAsync(title, 3500);
         }
 
         private static Task WipReachedToastAsync(string title)
         {
-            return Application.Current.MainPage.DisplayToastAsync(
-                new ToastOptions
-                {
-                    BackgroundColor = Color.Navy,
-                    Duration = TimeSpan.FromSeconds(5),
-                    MessageOptions = new MessageOptions
-                    {
-                        Message = title,
-                        Padding = new Thickness(140),
-                        Foreground = Color.Teal,
-                        Font = Font.SystemFontOfSize(25)
-                    }
-                });
+            return Task.CompletedTask;
+            //return Application.Current.MainPage.DisplayToastAsync(
+            //    new ToastOptions
+            //    {
+            //        BackgroundColor = Color.Navy,
+            //        Duration = TimeSpan.FromSeconds(5),
+            //        MessageOptions = new MessageOptions
+            //        {
+            //            Message = title,
+            //            Padding = new Thickness(140),
+            //            Foreground = Color.Teal,
+            //            Font = Font.SystemFontOfSize(25)
+            //        }
+            //    });
         }
     }
 }
