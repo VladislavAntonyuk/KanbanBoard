@@ -1,22 +1,27 @@
-﻿using System.Linq;
-using KanbanBoard.Db;
+﻿using KanbanBoard.Db;
 using KanbanBoard.Models;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using System.Linq;
+using Microsoft.Maui.Hosting;
+using Microsoft.Maui.Controls.Compatibility;
+using Microsoft.Extensions.DependencyInjection;
+using Application = Microsoft.Maui.Controls.Application;
+using System;
 
 namespace KanbanBoard
 {
-    public partial class App
+    public partial class App : Application
     {
         private const string DbFileName = "KanbanBoard.db";
         public static string DbPath;
 
-        public App()
+        public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            DbPath = DependencyService.Get<IPath>().GetDatabasePath(DbFileName);
+            DbPath = serviceProvider.GetRequiredService<IPath>().GetDatabasePath(DbFileName);
             DbEnsureCreated();
             AddTestData();
-            MainPage = new MainPage();
         }
 
         public static void DbEnsureCreated()
@@ -36,18 +41,18 @@ namespace KanbanBoard
             using var db = new ApplicationContext(DbPath);
             if (!db.Columns.Any())
             {
-                var todoColumn = new Column {Name = "ToDo", Order = 1};
-                var inProgressColumn = new Column {Name = "In Progress", Order = 2, Wip = 3};
+                var todoColumn = new Column { Name = "ToDo", Order = 1 };
+                var inProgressColumn = new Column { Name = "In Progress", Order = 2, Wip = 3 };
                 db.Columns.Add(todoColumn);
                 db.Columns.Add(inProgressColumn);
-                db.Columns.Add(new Column {Name = "Done", Order = 3});
+                db.Columns.Add(new Column { Name = "Done", Order = 3 });
 
                 db.SaveChanges();
 
                 db.Cards.Add(new Card
-                    {Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn});
+                { Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn });
                 db.Cards.Add(new Card
-                    {Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn});
+                { Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn });
                 db.Cards.Add(new Card
                 {
                     Name = "Card 3",
@@ -58,6 +63,11 @@ namespace KanbanBoard
 
                 db.SaveChanges();
             }
+        }
+
+        protected override IWindow CreateWindow(IActivationState activationState)
+        {
+            return new Microsoft.Maui.Controls.Window(new MainPage());
         }
     }
 }
