@@ -3,6 +3,9 @@ using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Controls.Xaml;
+
+[assembly: XamlCompilationAttribute(XamlCompilationOptions.Compile)]
 
 namespace KanbanBoard
 {
