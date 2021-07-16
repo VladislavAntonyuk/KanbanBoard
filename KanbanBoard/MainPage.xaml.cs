@@ -4,7 +4,7 @@ using Microsoft.Maui.Controls;
 
 namespace KanbanBoard
 {
-	public partial class MainPage : ContentPage, IPage
+	public partial class MainPage : ContentPage
 	{
 		public MainPage()
 		{

@@ -22,6 +22,7 @@ namespace KanbanBoard
             DbPath = serviceProvider.GetRequiredService<IPath>().GetDatabasePath(DbFileName);
             DbEnsureCreated();
             AddTestData();
+			MainPage = new MainPage();
         }
 
         public static void DbEnsureCreated()
@@ -63,11 +64,6 @@ namespace KanbanBoard
 
                 db.SaveChanges();
             }
-        }
-
-        protected override IWindow CreateWindow(IActivationState activationState)
-        {
-            return new Microsoft.Maui.Controls.Window(new MainPage());
         }
     }
 }
