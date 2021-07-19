@@ -7,7 +7,7 @@ namespace KanbanBoard
     {
         public string GetDatabasePath(string filename)
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), filename);
         }
     }
 }

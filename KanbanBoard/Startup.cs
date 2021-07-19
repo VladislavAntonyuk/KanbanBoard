@@ -4,6 +4,7 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Controls.Xaml;
+using KanbanBoard.Db;
 
 [assembly: XamlCompilationAttribute(XamlCompilationOptions.Compile)]
 
@@ -19,6 +20,8 @@ namespace KanbanBoard
                 .ConfigureServices(services =>
                 {
                     services.AddTransient<IPath, DbPath>();
+                    services.AddTransient<IColumnsRepository, ColumnsRepository>();
+                    services.AddTransient<ICardsRepository, CardsRepository>();
                 })
                 .ConfigureFonts(fonts =>
                 {
