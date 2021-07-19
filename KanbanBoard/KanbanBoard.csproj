@@ -35,7 +35,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-preview.6.21352.1" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.8.0-beta" />
 	</ItemGroup>
 
 	<PropertyGroup>

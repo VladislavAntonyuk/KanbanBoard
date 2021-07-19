@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using KanbanBoard.Db;
 using KanbanBoard.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using MvvmHelpers;
@@ -17,26 +16,27 @@ namespace KanbanBoard
         private ObservableCollection<ColumnInfo> _columns;
         private Card _dragCard;
         private int _position;
+        private readonly ICardsRepository cardsRepository;
+        private readonly IColumnsRepository columnsRepository;
 
         public MainPageViewModel()
         {
             RefreshCommand.Execute(null);
+            this.cardsRepository = new CardsRepository(App.DbPath);
+            this.columnsRepository = new ColumnsRepository(App.DbPath);
         }
 
         public ICommand RefreshCommand => new Command(UpdateCollection);
 
-        public ICommand DropCommand => new Command<ColumnInfo>(async columnInfo =>
+        public ICommand DropCommand => new Command<ColumnInfo>(columnInfo =>
         {
             if (_dragCard is null || columnInfo.Column.Cards.Count >= columnInfo.Column.Wip) return;
-            await using (var db = new ApplicationContext(App.DbPath))
+
+            var cardToUpdate = cardsRepository.GetItem(_dragCard.Id);
+            if (cardToUpdate is not null)
             {
-                var cardToUpdate = await db.Cards.FirstOrDefaultAsync(x => x.Id == _dragCard.Id);
-                if (cardToUpdate is not null)
-                {
-                    cardToUpdate.ColumnId = columnInfo.Column.Id;
-                    db.Cards.Update(cardToUpdate);
-                    await db.SaveChangesAsync();
-                }
+                cardToUpdate.ColumnId = columnInfo.Column.Id;
+                cardsRepository.SaveItem(cardToUpdate);
             }
 
             UpdateCollection();
@@ -62,39 +62,30 @@ namespace KanbanBoard
             } while (wip < 0);
 
             var column = new Column {Name = columnName, Wip = wip, Order = _columns.Count + 1};
-            await using (var db = new ApplicationContext(App.DbPath))
-            {
-                await db.Columns.AddAsync(column);
-                await db.SaveChangesAsync();
-            }
-
+            columnsRepository.SaveItem(column);
             UpdateCollection();
             await ToastAsync("Column is added");
         });
 
         public ICommand AddCard => new Command<int>(async columnId =>
         {
-            await using (var db = new ApplicationContext(App.DbPath))
+            var column = columnsRepository.GetItem(columnId);
+            var columnInfo = new ColumnInfo(0, column);
+            if (columnInfo.IsWipReached)
             {
-                var column = await db.Columns.Include(c => c.Cards).FirstAsync(c => c.Id == columnId);
-                var columnInfo = new ColumnInfo(0, column);
-                if (columnInfo.IsWipReached)
-                {
-                    await WipReachedToastAsync("WIP is reached");
-                    return;
-                }
-
-                var cardName = await UserPromptAsync("New card", "Enter card name", Keyboard.Default);
-                if (string.IsNullOrWhiteSpace(cardName)) return;
-
-                var cardDescription = await UserPromptAsync("New card", "Enter card description", Keyboard.Default);
-                await db.Cards.AddAsync(new Card
-                {
-                    Name = cardName, Description = cardDescription, ColumnId = columnId,
-                    Order = column.Cards.Count + 1
-                });
-                await db.SaveChangesAsync();
+                await WipReachedToastAsync("WIP is reached");
+                return;
             }
+
+            var cardName = await UserPromptAsync("New card", "Enter card name", Keyboard.Default);
+            if (string.IsNullOrWhiteSpace(cardName)) return;
+
+            var cardDescription = await UserPromptAsync("New card", "Enter card description", Keyboard.Default);
+            cardsRepository.SaveItem(new Card
+            {
+                Name = cardName, Description = cardDescription, ColumnId = columnId,
+                Order = column.Cards.Count + 1
+            });
 
             UpdateCollection();
             await ToastAsync("Card is added");
@@ -110,9 +101,7 @@ namespace KanbanBoard
 
             if (!shouldCancel)
             {
-                await using var db = new ApplicationContext(App.DbPath);
-                db.Cards.Remove(card);
-                await db.SaveChangesAsync();
+                cardsRepository.DeleteItem(card.Id);
                 UpdateCollection();
             }
         });
@@ -132,9 +121,7 @@ namespace KanbanBoard
 
             if (!shouldCancel)
             {
-                await using var db = new ApplicationContext(App.DbPath);
-                db.Columns.Remove(columnInfo.Column);
-                await db.SaveChangesAsync();
+                columnsRepository.DeleteItem(columnInfo.Column.Id);
             }
 
             UpdateCollection();
@@ -155,15 +142,13 @@ namespace KanbanBoard
         private void UpdateCollection()
         {
             IsBusy = true;
-            using (var db = new ApplicationContext(App.DbPath))
-            {
-                Columns = db.Columns.Include(c => c.Cards)
-                    .OrderBy(c => c.Order)
-                    .ToList()
-                    .Select(OrderCards)
-                    .ToObservableCollection();
-                Position = 0;
-            }
+            
+            Columns = columnsRepository.GetItems()
+                .OrderBy(c => c.Order)
+                .ToList()
+                .Select(OrderCards)
+                .ToObservableCollection();
+            Position = 0;
 
             IsBusy = false;
         }
