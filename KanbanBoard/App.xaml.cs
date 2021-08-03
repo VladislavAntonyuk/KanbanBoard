@@ -1,28 +1,26 @@
 ﻿using KanbanBoard.Db;
 using KanbanBoard.Models;
 using Microsoft.Maui;
-using Microsoft.Maui.Controls;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Application = Microsoft.Maui.Controls.Application;
 using System;
+using System.Threading.Tasks;
 
 namespace KanbanBoard
 {
     public partial class App : Application
     {
-        private const string DbFileName = "KanbanBoard.db";
-        public static string DbPath;
         private IServiceProvider serviceProvider;
 
         public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             this.serviceProvider = serviceProvider;
-            DbPath = serviceProvider.GetRequiredService<IPath>().GetDatabasePath(DbFileName);
+            var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
             DbEnsureCreated();
-            AddTestData();
-			MainPage = new MainPage();
+            AddTestData().Wait();
+			MainPage = new MainPage(mainPageViewModel);
         }
 
         public static void DbEnsureCreated()
@@ -37,23 +35,22 @@ namespace KanbanBoard
             //db.Database.EnsureDeleted();
         }
 
-        public void AddTestData()
+        public async Task AddTestData()
         {
             var columnsRepository = serviceProvider.GetRequiredService<IColumnsRepository>();
             var cardsRepository = serviceProvider.GetRequiredService<ICardsRepository>();
-            if (!cardsRepository.GetItems().Any())
+            var items = await cardsRepository.GetItems();
+            if (!items.Any())
             {
                 var todoColumn = new Column { Name = "ToDo", Order = 1 };
                 var inProgressColumn = new Column { Name = "In Progress", Order = 2, Wip = 3 };
-                columnsRepository.SaveItem(todoColumn);
-                columnsRepository.SaveItem(inProgressColumn);
-                columnsRepository.SaveItem(new Column { Name = "Done", Order = 3 });
+                await columnsRepository.SaveItem(todoColumn);
+                await columnsRepository.SaveItem(inProgressColumn);
+                await columnsRepository.SaveItem(new Column { Name = "Done", Order = 3 });
 
-                cardsRepository.SaveItem(new Card
-                { Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn });
-                cardsRepository.SaveItem(new Card
-                { Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn });
-                cardsRepository.SaveItem(new Card
+                await cardsRepository.SaveItem(new Card { Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn });
+                await cardsRepository.SaveItem(new Card { Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn });
+                await cardsRepository.SaveItem(new Card
                 {
                     Name = "Card 3",
                     Description = "Description for card 3",

@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using KanbanBoard.Models;
 
 namespace KanbanBoard.Db
 {
-    public interface IColumnsRepository
+    public interface IColumnsRepository:IBaseRepository<Column>
     {
-        int DeleteItem(int id);
-        Column GetItem(int id);
-        IEnumerable<Column> GetItems();
-        int SaveItem(Column item);
     }
 }

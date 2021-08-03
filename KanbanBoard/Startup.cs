@@ -22,6 +22,7 @@ namespace KanbanBoard
                     services.AddTransient<IPath, DbPath>();
                     services.AddTransient<IColumnsRepository, ColumnsRepository>();
                     services.AddTransient<ICardsRepository, CardsRepository>();
+                    services.AddTransient<MainPageViewModel>();
                 })
                 .ConfigureFonts(fonts =>
                 {

@@ -1,7 +1,10 @@
-﻿namespace KanbanBoard.Models
+﻿using SQLite;
+
+namespace KanbanBoard.Models
 {
     public sealed class Card
     {
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

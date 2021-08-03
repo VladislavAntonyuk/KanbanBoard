@@ -2,6 +2,6 @@
 {
     public interface IPath
     {
-        string GetDatabasePath(string filename);
+        string GetDatabasePath(string filename = "KanbanBoard.db");
     }
 }

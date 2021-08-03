@@ -19,27 +19,27 @@ namespace KanbanBoard
         private readonly ICardsRepository cardsRepository;
         private readonly IColumnsRepository columnsRepository;
 
-        public MainPageViewModel()
+        public MainPageViewModel(ICardsRepository cardsRepository, IColumnsRepository columnsRepository)
         {
+            this.cardsRepository = cardsRepository;
+            this.columnsRepository = columnsRepository;
             RefreshCommand.Execute(null);
-            this.cardsRepository = new CardsRepository(App.DbPath);
-            this.columnsRepository = new ColumnsRepository(App.DbPath);
         }
 
-        public ICommand RefreshCommand => new Command(UpdateCollection);
+        public ICommand RefreshCommand => new Command(async () => await UpdateCollection());
 
-        public ICommand DropCommand => new Command<ColumnInfo>(columnInfo =>
+        public ICommand DropCommand => new Command<ColumnInfo>(async columnInfo =>
         {
             if (_dragCard is null || columnInfo.Column.Cards.Count >= columnInfo.Column.Wip) return;
 
-            var cardToUpdate = cardsRepository.GetItem(_dragCard.Id);
+            var cardToUpdate = await cardsRepository.GetItem(_dragCard.Id);
             if (cardToUpdate is not null)
             {
                 cardToUpdate.ColumnId = columnInfo.Column.Id;
-                cardsRepository.SaveItem(cardToUpdate);
+                await cardsRepository.SaveItem(cardToUpdate);
             }
 
-            UpdateCollection();
+            await UpdateCollection();
             Position = columnInfo.Index;
         });
 
@@ -62,14 +62,14 @@ namespace KanbanBoard
             } while (wip < 0);
 
             var column = new Column {Name = columnName, Wip = wip, Order = _columns.Count + 1};
-            columnsRepository.SaveItem(column);
-            UpdateCollection();
+            await columnsRepository.SaveItem(column);
+            await UpdateCollection();
             await ToastAsync("Column is added");
         });
 
         public ICommand AddCard => new Command<int>(async columnId =>
         {
-            var column = columnsRepository.GetItem(columnId);
+            var column = await columnsRepository.GetItem(columnId);
             var columnInfo = new ColumnInfo(0, column);
             if (columnInfo.IsWipReached)
             {
@@ -81,13 +81,13 @@ namespace KanbanBoard
             if (string.IsNullOrWhiteSpace(cardName)) return;
 
             var cardDescription = await UserPromptAsync("New card", "Enter card description", Keyboard.Default);
-            cardsRepository.SaveItem(new Card
+            await cardsRepository.SaveItem(new Card
             {
                 Name = cardName, Description = cardDescription, ColumnId = columnId,
                 Order = column.Cards.Count + 1
             });
 
-            UpdateCollection();
+            await UpdateCollection();
             await ToastAsync("Card is added");
         });
 
@@ -101,8 +101,8 @@ namespace KanbanBoard
 
             if (!shouldCancel)
             {
-                cardsRepository.DeleteItem(card.Id);
-                UpdateCollection();
+                await cardsRepository.DeleteItem(card.Id);
+                await UpdateCollection();
             }
         });
 
@@ -121,10 +121,10 @@ namespace KanbanBoard
 
             if (!shouldCancel)
             {
-                columnsRepository.DeleteItem(columnInfo.Column.Id);
+                await columnsRepository.DeleteItem(columnInfo.Column.Id);
             }
 
-            UpdateCollection();
+            await UpdateCollection();
         });
 
         public ObservableCollection<ColumnInfo> Columns
@@ -139,11 +139,11 @@ namespace KanbanBoard
             set => SetProperty(ref _position, value);
         }
 
-        private void UpdateCollection()
+        private async Task UpdateCollection()
         {
             IsBusy = true;
-            
-            Columns = columnsRepository.GetItems()
+            var items = await columnsRepository.GetItems();
+            Columns = items
                 .OrderBy(c => c.Order)
                 .ToList()
                 .Select(OrderCards)

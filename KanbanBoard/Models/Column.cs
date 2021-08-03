@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using SQLite;
 
 namespace KanbanBoard.Models
 {
@@ -10,6 +11,7 @@ namespace KanbanBoard.Models
             Cards = new ObservableCollection<Card>();
         }
 
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public string Name { get; set; }
         public int Wip { get; set; } = int.MaxValue;
