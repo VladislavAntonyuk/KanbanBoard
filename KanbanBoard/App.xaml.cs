@@ -18,21 +18,8 @@ namespace KanbanBoard
             InitializeComponent();
             this.serviceProvider = serviceProvider;
             var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
-            DbEnsureCreated();
             AddTestData().Wait();
 			MainPage = new MainPage(mainPageViewModel);
-        }
-
-        public static void DbEnsureCreated()
-        {
-            //using var db = new ApplicationContext(DbPath);
-            //db.Database.EnsureCreated();
-        }
-
-        public static void DbEnsureDeleted()
-        {
-            //using var db = new ApplicationContext(DbPath);
-            //db.Database.EnsureDeleted();
         }
 
         public async Task AddTestData()

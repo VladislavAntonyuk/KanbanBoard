@@ -52,7 +52,7 @@ namespace KanbanBoard
 
         private static void DeleteDbAndCloseApp()
         {
-            App.DbEnsureDeleted();
+            //App.DbEnsureDeleted();
             Environment.Exit(0);
         }
     }

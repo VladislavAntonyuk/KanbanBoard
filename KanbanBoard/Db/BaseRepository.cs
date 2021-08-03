@@ -6,39 +6,41 @@ namespace KanbanBoard.Db
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : new()
     {
-        SQLiteAsyncConnection database;
+        SQLiteConnection database;
+
         public BaseRepository(IPath path)
         {
             var dbPath = path.GetDatabasePath();
-            database = new SQLiteAsyncConnection(dbPath);
-            database.CreateTableAsync<T>().Wait();
+            database = new SQLiteConnection(dbPath);
+            database.CreateTable<T>();
         }
 
         public Task<List<T>> GetItems()
         {
-            return database.Table<T>().ToListAsync();
+            return Task.FromResult(database.Table<T>().ToList());
         }
 
         public Task<T> GetItem(int id)
         {
-            return database.GetAsync<T>(id);
+            return Task.FromResult(database.Get<T>(id));
         }
 
         public Task DeleteItem(int id)
         {
-            return database.DeleteAsync<T>(id);
+            database.Delete<T>(id);
+            return Task.CompletedTask;
         }
 
-        public async Task<T> UpdateItem(T item)
+        public Task<T> UpdateItem(T item)
         {
-            await database.UpdateAsync(item);
-            return item;
+            database.Update(item);
+            return Task.FromResult(item);
         }
 
-        public async Task<T> SaveItem(T item)
+        public Task<T> SaveItem(T item)
         {
-            await database.InsertAsync(item);
-            return item;
+            database.Insert(item);
+            return Task.FromResult(item);
         }
     }
 }
