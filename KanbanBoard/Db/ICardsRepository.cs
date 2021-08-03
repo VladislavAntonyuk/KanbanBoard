@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using KanbanBoard.Models;
 
 namespace KanbanBoard.Db
 {
-    public interface ICardsRepository
+    public interface ICardsRepository:IBaseRepository<Card>
     {
-        int DeleteItem(int id);
-        Card GetItem(int id);
-        IEnumerable<Card> GetItems();
-        int SaveItem(Card item);
+        
     }
 }

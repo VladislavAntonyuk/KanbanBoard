@@ -22,9 +22,6 @@
         </OnPlatform>
     </ContentPage.Resources>
 
-    <ContentPage.BindingContext>
-        <kanbanboard:MainPageViewModel />
-    </ContentPage.BindingContext>
     <!-- <RefreshView Command="{Binding RefreshCommand}" -->
     <!--              IsRefreshing="{Binding IsBusy}"> -->
     <StackLayout BackgroundColor="{DynamicResource BoardBackgroundColor}">
