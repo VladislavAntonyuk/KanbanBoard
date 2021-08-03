@@ -18,21 +18,8 @@ namespace KanbanBoard
             InitializeComponent();
             this.serviceProvider = serviceProvider;
             var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
-            DbEnsureCreated();
             AddTestData().Wait();
 			MainPage = new MainPage(mainPageViewModel);
-        }
-
-        public static void DbEnsureCreated()
-        {
-            //using var db = new ApplicationContext(DbPath);
-            //db.Database.EnsureCreated();
-        }
-
-        public static void DbEnsureDeleted()
-        {
-            //using var db = new ApplicationContext(DbPath);
-            //db.Database.EnsureDeleted();
         }
 
         public async Task AddTestData()
@@ -48,14 +35,14 @@ namespace KanbanBoard
                 await columnsRepository.SaveItem(inProgressColumn);
                 await columnsRepository.SaveItem(new Column { Name = "Done", Order = 3 });
 
-                await cardsRepository.SaveItem(new Card { Name = "Card 1", Description = "Description for card 1", Order = 1, Column = todoColumn });
-                await cardsRepository.SaveItem(new Card { Name = "Card 2", Description = "Description for card 2", Order = 2, Column = todoColumn });
+                await cardsRepository.SaveItem(new Card { Name = "Card 1", Description = "Description for card 1", Order = 1, ColumnId = todoColumn.Id });
+                await cardsRepository.SaveItem(new Card { Name = "Card 2", Description = "Description for card 2", Order = 2, ColumnId = todoColumn.Id });
                 await cardsRepository.SaveItem(new Card
                 {
                     Name = "Card 3",
                     Description = "Description for card 3",
                     Order = 1,
-                    Column = inProgressColumn
+                    ColumnId = inProgressColumn.Id
                 });
             }
         }
