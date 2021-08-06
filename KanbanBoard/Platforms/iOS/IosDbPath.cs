@@ -5,10 +5,9 @@ namespace KanbanBoard
 {
     public class DbPath : IPath
     {
-        public string GetDatabasePath(string sqliteFilename)
+        public string GetDatabasePath(string filename)
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library",
-                sqliteFilename);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), filename);
         }
     }
 }
