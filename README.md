@@ -16,3 +16,7 @@ Delete cards
 
 Delete columns
 ![Delete column](https://user-images.githubusercontent.com/33021114/109400007-ddc4bc00-794e-11eb-94a4-ebf858198c6d.png)
+
+dotnet build KanbanBoard -t:Run -f net6.0-android
+dotnet build KanbanBoard -t:Run -f net6.0-ios
+dotnet build KanbanBoard -t:Run -f net6.0-maccatalyst
