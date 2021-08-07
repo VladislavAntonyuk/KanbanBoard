@@ -47,10 +47,9 @@
                 Text="Reset to default" />
         </StackLayout>
 
-        <!--IndicatorView="Indicator"-->
         <CarouselView
             x:Name="Board"
-            
+            IndicatorView="Indicator"
             EmptyView="No columns to display"
             ItemsSource="{Binding Columns}"
             Position="{Binding Position}"
@@ -186,11 +185,11 @@
             </CarouselView.ItemTemplate>
         </CarouselView>
 
-        <!--<IndicatorView
+        <IndicatorView
             x:Name="Indicator"
             HorizontalOptions="Center"
             IndicatorColor="White"
-            SelectedIndicatorColor="Black" />-->
+            SelectedIndicatorColor="Black" />
 
         <Button
             BackgroundColor="Transparent"
