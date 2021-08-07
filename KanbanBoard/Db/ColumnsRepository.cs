@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KanbanBoard.Models;
 using SQLite;
+using SQLiteNetExtensions.Extensions;
 
 namespace KanbanBoard.Db
 {
@@ -16,18 +17,20 @@ namespace KanbanBoard.Db
         {
             var columns = database.Table<Column>().ToList();
             var cards = database.Table<Card>().ToList();
-            foreach (var column in columns)
-            {
-                foreach (var card in cards)
-                {
-                    if (card.ColumnId == column.Id)
-                    {
-                        column.Cards.Add(card);
-                    }
-                }
-            }
+            var result = columns.GroupJoin(cards, column => column.Id, card => card.ColumnId,
+                        (column, columnCards) =>
+                        {
+                            column.Cards = columnCards.ToObservableCollection();
+                            return column;
+                        }).ToList();
+            return Task.FromResult(result);
+        }
 
-            return Task.FromResult(columns);
+        public Task DeleteColumnWithCards(Column column)
+        {
+            database.Delete(column, true);
+            return Task.CompletedTask;
+
         }
     }
 }

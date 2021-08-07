@@ -6,10 +6,13 @@ namespace KanbanBoard
 {
 	public partial class MainPage : ContentPage
 	{
-		public MainPage(MainPageViewModel viewModel)
+        private readonly IPath path;
+
+		public MainPage(MainPageViewModel viewModel, IPath path)
 		{
 			InitializeComponent();
             BindingContext = viewModel;
+            this.path = path;
 		}
 
         private async void ResetButton_OnClicked(object sender, EventArgs e)
@@ -47,12 +50,16 @@ namespace KanbanBoard
             //        }
             //    }
             //});
-            //if (!shouldCancel) DeleteDbAndCloseApp();
+            //if (!shouldCancel) 
+            {
+                DeleteDbAndCloseApp();
+            }
         }
 
-        private static void DeleteDbAndCloseApp()
+        private void DeleteDbAndCloseApp()
         {
-            //App.DbEnsureDeleted();
+            var dbPath = path.GetDatabasePath();
+            path.DeleteFile(dbPath);
             Environment.Exit(0);
         }
     }

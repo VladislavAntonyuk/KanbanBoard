@@ -36,7 +36,7 @@ namespace KanbanBoard
             if (cardToUpdate is not null)
             {
                 cardToUpdate.ColumnId = columnInfo.Column.Id;
-                await cardsRepository.SaveItem(cardToUpdate);
+                await cardsRepository.UpdateItem(cardToUpdate);
             }
 
             await UpdateCollection();
@@ -121,7 +121,7 @@ namespace KanbanBoard
 
             if (!shouldCancel)
             {
-                await columnsRepository.DeleteItem(columnInfo.Column.Id);
+                await columnsRepository.DeleteColumnWithCards(columnInfo.Column);
             }
 
             await UpdateCollection();
@@ -171,7 +171,7 @@ namespace KanbanBoard
 
         private static Task<bool> SnackbarAsync(string title, string buttonText, Func<Task> task)
         {
-            return Task.FromResult(true);
+            return Task.FromResult(false);
             //return Application.Current.MainPage.DisplaySnackBarAsync(title, buttonText, task, TimeSpan.FromSeconds(3));
         }
 

@@ -16,7 +16,7 @@ namespace KanbanBoard.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int Wip { get; set; } = int.MaxValue;
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.CascadeDelete)]
         public ICollection<Card> Cards { get; set; }
         public int Order { get; set; }
     }

@@ -17,12 +17,19 @@ namespace KanbanBoard
             appBuilder
                 .UseMauiApp<App>()
                 .UseMauiServiceProviderFactory(constructorInjection: true)
+                .ConfigureMauiHandlers(handlers =>
+                {
+                    #if __ANDROID__
+                        handlers.AddCompatibilityRenderer(typeof(Microsoft.Maui.Controls.IndicatorView), typeof(Microsoft.Maui.Controls.Compatibility.Platform.Android.IndicatorViewRenderer));
+                    #endif
+                })
                 .ConfigureServices(services =>
                 {
                     services.AddTransient<IPath, DbPath>();
                     services.AddTransient<IColumnsRepository, ColumnsRepository>();
                     services.AddTransient<ICardsRepository, CardsRepository>();
                     services.AddTransient<MainPageViewModel>();
+                    services.AddTransient<MainPage>();
                 })
                 .ConfigureFonts(fonts =>
                 {

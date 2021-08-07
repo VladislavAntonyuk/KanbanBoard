@@ -17,9 +17,9 @@ namespace KanbanBoard
         {
             InitializeComponent();
             this.serviceProvider = serviceProvider;
-            var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
             AddTestData().Wait();
-			MainPage = new MainPage(mainPageViewModel);
+            var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
+			MainPage = serviceProvider.GetRequiredService<MainPage>();;
         }
 
         public async Task AddTestData()
