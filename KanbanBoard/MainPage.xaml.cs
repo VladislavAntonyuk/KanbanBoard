@@ -1,18 +1,19 @@
-﻿using System;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 
 namespace KanbanBoard
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage(MainPageViewModel viewModel)
-		{
-			InitializeComponent();
-            BindingContext = viewModel;
-		}
+    public partial class MainPage : ContentPage
+    {
+        private readonly IPath path;
 
-        private async void ResetButton_OnClicked(object sender, EventArgs e)
+        public MainPage(MainPageViewModel viewModel, IPath path)
+        {
+            InitializeComponent();
+            BindingContext = viewModel;
+            this.path = path;
+        }
+
+        private void ResetButton_OnClicked(object sender, EventArgs e)
         {
             //var shouldCancel = await ResetButton.DisplaySnackBarAsync(new SnackBarOptions
             //{
@@ -47,12 +48,16 @@ namespace KanbanBoard
             //        }
             //    }
             //});
-            //if (!shouldCancel) DeleteDbAndCloseApp();
+            //if (!shouldCancel) 
+            {
+                DeleteDbAndCloseApp();
+            }
         }
 
-        private static void DeleteDbAndCloseApp()
+        private void DeleteDbAndCloseApp()
         {
-            //App.DbEnsureDeleted();
+            var dbPath = path.GetDatabasePath();
+            path.DeleteFile(dbPath);
             Environment.Exit(0);
         }
     }

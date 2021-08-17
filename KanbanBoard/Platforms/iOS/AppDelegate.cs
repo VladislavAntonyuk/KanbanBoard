@@ -1,9 +1,8 @@
-﻿using Foundation;
-using Microsoft.Maui;
+﻿using Microsoft.Maui;
 
 namespace KanbanBoard
 {
-	[Register(nameof(AppDelegate))]
+    [Register(nameof(AppDelegate))]
 	public class AppDelegate : MauiUIApplicationDelegate<Startup>
 	{
 	}

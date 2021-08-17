@@ -1,7 +1,8 @@
-﻿namespace KanbanBoard
+﻿namespace KanbanBoard;
+
+public interface IPath
 {
-    public interface IPath
-    {
-        string GetDatabasePath(string filename = "KanbanBoard.db");
-    }
+    string GetDatabasePath(string filename = "KanbanBoard.db");
+
+    void DeleteFile(string path);
 }

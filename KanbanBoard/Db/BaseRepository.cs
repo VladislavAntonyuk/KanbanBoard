@@ -1,46 +1,51 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using SQLite;
+﻿using SQLite;
 
-namespace KanbanBoard.Db
+namespace KanbanBoard.Db;
+
+public abstract class BaseRepository<T> : IBaseRepository<T> where T : new()
 {
-    public abstract class BaseRepository<T> : IBaseRepository<T> where T : new()
+    private readonly Lazy<SQLiteConnection> _databaseConnectionHolder;
+    protected SQLiteConnection Database
     {
-        protected SQLiteConnection database;
-
-        public BaseRepository(IPath path)
+        get
         {
-            var dbPath = path.GetDatabasePath();
-            database = new SQLiteConnection(dbPath);
+            var database = _databaseConnectionHolder.Value;
             database.CreateTable<T>();
+            return database;
         }
+    }
 
-        public virtual Task<List<T>> GetItems()
-        {
-            return Task.FromResult(database.Table<T>().ToList());
-        }
+    public BaseRepository(IPath path)
+    {
+        var dbPath = path.GetDatabasePath();
+        _databaseConnectionHolder = new Lazy<SQLiteConnection>(() => new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache));
+    }
 
-        public Task<T> GetItem(int id)
-        {
-            return Task.FromResult(database.Get<T>(id));
-        }
+    public virtual Task<List<T>> GetItems()
+    {
+        return Task.FromResult(Database.Table<T>().ToList());
+    }
 
-        public Task DeleteItem(int id)
-        {
-            database.Delete<T>(id);
-            return Task.CompletedTask;
-        }
+    public Task<T> GetItem(int id)
+    {
+        return Task.FromResult(Database.Get<T>(id));
+    }
 
-        public Task<T> UpdateItem(T item)
-        {
-            database.Update(item);
-            return Task.FromResult(item);
-        }
+    public Task DeleteItem(int id)
+    {
+        Database.Delete<T>(id);
+        return Task.CompletedTask;
+    }
 
-        public Task<T> SaveItem(T item)
-        {
-            database.Insert(item);
-            return Task.FromResult(item);
-        }
+    public Task<T> UpdateItem(T item)
+    {
+        Database.Update(item);
+        return Task.FromResult(item);
+    }
+
+    public Task<T> SaveItem(T item)
+    {
+        Database.Insert(item);
+        return Task.FromResult(item);
     }
 }
