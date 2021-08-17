@@ -1,21 +1,19 @@
-﻿using System;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
 
 namespace KanbanBoard
 {
-	public partial class MainPage : ContentPage
-	{
+    public partial class MainPage : ContentPage
+    {
         private readonly IPath path;
 
-		public MainPage(MainPageViewModel viewModel, IPath path)
-		{
-			InitializeComponent();
+        public MainPage(MainPageViewModel viewModel, IPath path)
+        {
+            InitializeComponent();
             BindingContext = viewModel;
             this.path = path;
-		}
+        }
 
-        private async void ResetButton_OnClicked(object sender, EventArgs e)
+        private void ResetButton_OnClicked(object sender, EventArgs e)
         {
             //var shouldCancel = await ResetButton.DisplaySnackBarAsync(new SnackBarOptions
             //{

@@ -1,11 +1,8 @@
 ﻿using KanbanBoard.Db;
 using KanbanBoard.Models;
 using Microsoft.Maui;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Application = Microsoft.Maui.Controls.Application;
-using System;
-using System.Threading.Tasks;
 
 namespace KanbanBoard
 {
@@ -18,7 +15,6 @@ namespace KanbanBoard
             InitializeComponent();
             this.serviceProvider = serviceProvider;
             AddTestData().Wait();
-            var mainPageViewModel = serviceProvider.GetRequiredService<MainPageViewModel>();
 			MainPage = serviceProvider.GetRequiredService<MainPage>();;
         }
 
