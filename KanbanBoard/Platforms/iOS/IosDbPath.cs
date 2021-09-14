@@ -1,4 +1,7 @@
-﻿namespace KanbanBoard
+﻿using System;
+using System.IO;
+
+namespace KanbanBoard
 {
     public class DbPath : IPath
     {
