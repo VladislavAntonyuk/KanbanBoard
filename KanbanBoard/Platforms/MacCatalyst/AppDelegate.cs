@@ -1,5 +1,5 @@
-﻿using Foundation;
-using Microsoft.Maui;
+﻿using Microsoft.Maui;
+using Microsoft.Maui.Hosting;
 
 namespace KanbanBoard
 {

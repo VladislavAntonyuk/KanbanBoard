@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using KanbanBoard.Db;
+﻿using KanbanBoard.Db;
 using KanbanBoard.Models;
 using Microsoft.Maui;
 using Microsoft.Extensions.DependencyInjection;

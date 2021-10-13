@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace KanbanBoard.Db;
+﻿namespace KanbanBoard.Db;
 
 public interface IBaseRepository<T> where T : new()
 {

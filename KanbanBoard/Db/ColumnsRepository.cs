@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KanbanBoard.Models;
 using SQLiteNetExtensions.Extensions;
 

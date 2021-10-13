@@ -1,6 +1,4 @@
-﻿using UIKit;
-
-namespace KanbanBoard
+﻿namespace KanbanBoard
 {
     public class Program
 	{

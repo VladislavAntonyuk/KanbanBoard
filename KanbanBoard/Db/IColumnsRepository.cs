@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using KanbanBoard.Models;
+﻿using KanbanBoard.Models;
 
 namespace KanbanBoard.Db;
 

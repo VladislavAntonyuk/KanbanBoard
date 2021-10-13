@@ -7,6 +7,7 @@
         <UseMaui>true</UseMaui>
         <SingleProject>true</SingleProject>
         <RootNamespace>KanbanBoard</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
 
         <!-- Display name -->
         <ApplicationTitle>KanbanBoard</ApplicationTitle>
@@ -15,7 +16,7 @@
         <ApplicationId>com.vladislavantonyuk.kanbanboard</ApplicationId>
 
         <!-- Versions -->
-        <ApplicationVersion>1.0</ApplicationVersion>
+        <ApplicationVersion>1</ApplicationVersion>
         <AndroidVersionCode>1</AndroidVersionCode>
 		
         <!-- Required for C# Hot Reload -->
