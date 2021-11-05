@@ -18,7 +18,7 @@
         <x:Double x:Key="ColumnTitleSize">18</x:Double>
         <OnPlatform x:Key="FontAwesomeSolid" x:TypeArguments="x:String">
             <On Platform="Android" Value="FontAwesome5Solid#Regular" />
-            <On Platform="iOS" Value="FontAwesome5Free-Solid" />
+            <On Platform="iOS, macOS" Value="FontAwesome5Solid" />
         </OnPlatform>
     </ContentPage.Resources>
 
