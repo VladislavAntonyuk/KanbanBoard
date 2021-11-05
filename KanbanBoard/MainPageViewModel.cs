@@ -1,15 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using KanbanBoard.Db;
 using KanbanBoard.Models;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
-using MvvmHelpers;
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace KanbanBoard;
 
-public class MainPageViewModel : BaseViewModel
+public class MainPageViewModel : ObservableObject
 {
     private ObservableCollection<ColumnInfo> _columns;
     private Card _dragCard;
@@ -24,9 +25,9 @@ public class MainPageViewModel : BaseViewModel
         RefreshCommand.Execute(null);
     }
 
-    public ICommand RefreshCommand => new Command(async () => await UpdateCollection());
+    public ICommand RefreshCommand => new AsyncRelayCommand(UpdateCollection);
 
-    public ICommand DropCommand => new Command<ColumnInfo>(async columnInfo =>
+    public ICommand DropCommand => new AsyncRelayCommand<ColumnInfo>(async columnInfo =>
     {
         if (_dragCard is null || columnInfo.Column.Cards.Count >= columnInfo.Column.Wip) return;
 
@@ -41,11 +42,11 @@ public class MainPageViewModel : BaseViewModel
         Position = columnInfo.Index;
     });
 
-    public ICommand DragStartingCommand => new Command<Card>(card => { _dragCard = card; });
+    public ICommand DragStartingCommand => new RelayCommand<Card>(card => { _dragCard = card; });
 
-    public ICommand DropCompletedCommand => new Command(() => { _dragCard = null; });
+    public ICommand DropCompletedCommand => new RelayCommand(() => { _dragCard = null; });
 
-    public ICommand AddColumn => new Command(async () =>
+    public ICommand AddColumn => new AsyncRelayCommand(async () =>
     {
         var columnName = await UserPromptAsync("New column", "Enter column name", Keyboard.Default);
         if (string.IsNullOrWhiteSpace(columnName)) return;
@@ -65,7 +66,7 @@ public class MainPageViewModel : BaseViewModel
         await ToastAsync("Column is added");
     });
 
-    public ICommand AddCard => new Command<int>(async columnId =>
+    public ICommand AddCard => new AsyncRelayCommand<int>(async columnId =>
     {
         var column = await columnsRepository.GetItem(columnId);
         var columnInfo = new ColumnInfo(0, column);
@@ -91,7 +92,7 @@ public class MainPageViewModel : BaseViewModel
         await ToastAsync("Card is added");
     });
 
-    public ICommand DeleteCard => new Command<Card>(async card =>
+    public ICommand DeleteCard => new AsyncRelayCommand<Card>(async card =>
     {
         var result = await AlertAsync("Delete card", $"Do you want to delete card \"{card.Name}\"?");
         if (!result) return;
@@ -141,7 +142,6 @@ public class MainPageViewModel : BaseViewModel
 
     private async Task UpdateCollection()
     {
-        IsBusy = true;
         var items = await columnsRepository.GetItems();
         Columns = items
             .OrderBy(c => c.Order)
@@ -149,8 +149,6 @@ public class MainPageViewModel : BaseViewModel
             .Select(OrderCards)
             .ToObservableCollection();
         Position = 0;
-
-        IsBusy = false;
     }
 
     private static ColumnInfo OrderCards(Column c, int columnNumber)

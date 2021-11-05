@@ -22,8 +22,6 @@
         </OnPlatform>
     </ContentPage.Resources>
 
-    <!-- <RefreshView Command="{Binding RefreshCommand}" -->
-    <!--              IsRefreshing="{Binding IsBusy}"> -->
     <StackLayout BackgroundColor="{DynamicResource BoardBackgroundColor}">
         <HorizontalStackLayout>
             <Label
@@ -197,5 +195,4 @@
             Command="{Binding AddColumn}"
             Text="Add new column" />
     </StackLayout>
-    <!-- </RefreshView> -->
 </ContentPage>
