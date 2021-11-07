@@ -12,7 +12,7 @@
 		<ApplicationTitle>KanbanBoard</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.vladislavantonyuk.drawgo</ApplicationId>
+		<ApplicationId>com.vladislavantonyuk.kanbanboard</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationVersion>1</ApplicationVersion>
