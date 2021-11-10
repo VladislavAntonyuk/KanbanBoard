@@ -1,18 +1,17 @@
-﻿namespace KanbanBoard
-{
-    public class DbPath : IPath
-    {
-        public string GetDatabasePath(string filename)
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), filename);
-        }
+﻿namespace KanbanBoard;
 
-        public void DeleteFile(string path)
+public class DbPath : IPath
+{
+    public string GetDatabasePath(string filename)
+    {
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), filename);
+    }
+
+    public void DeleteFile(string path)
+    {
+        if (File.Exists(path))
         {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
+            File.Delete(path);
         }
     }
 }

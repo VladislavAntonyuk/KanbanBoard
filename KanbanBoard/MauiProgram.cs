@@ -19,11 +19,11 @@ public static class MauiProgram
             {
                 fonts.AddFont("FontAwesome5Solid.otf", "FASolid");
             });
-            builder.Services.AddTransient<IPath, DbPath>();
-            builder.Services.AddTransient<IColumnsRepository, ColumnsRepository>();
-            builder.Services.AddTransient<ICardsRepository, CardsRepository>();
-            builder.Services.AddTransient<MainPageViewModel>();
-            builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<IPath, DbPath>();
+        builder.Services.AddTransient<IColumnsRepository, ColumnsRepository>();
+        builder.Services.AddTransient<ICardsRepository, CardsRepository>();
+        builder.Services.AddTransient<MainPageViewModel>();
+        builder.Services.AddTransient<MainPage>();
         return builder.Build();
     }
 }
