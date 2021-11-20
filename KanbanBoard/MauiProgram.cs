@@ -1,5 +1,6 @@
 ﻿using Microsoft.Maui.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Controls.Xaml;
 using KanbanBoard.Db;
@@ -15,6 +16,10 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .ConfigureMauiHandlers(handlers =>
+            {
+                handlers.AddCompatibilityRenderers(typeof(Xamarin.CommunityToolkit.UI.Views.MediaElementRenderer).Assembly);
+            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("FontAwesome5Solid.otf", "FASolid");

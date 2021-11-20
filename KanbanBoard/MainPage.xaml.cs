@@ -17,49 +17,51 @@ public partial class MainPage : ContentPage
         this.path = path;
     }
 
-        private async void ResetButton_OnClicked(object sender, EventArgs e)
+    private async void ResetButton_OnClicked(object sender, EventArgs e)
+    {
+        /*
+         * this doesn't work in MauiCompat
+        var shouldCancel = await ResetButton.DisplaySnackBarAsync(new SnackBarOptions
         {
-            var shouldCancel = await ResetButton.DisplaySnackBarAsync(new SnackBarOptions
+            BackgroundColor = Colors.Peru,
+            Duration = TimeSpan.FromSeconds(3),
+            MessageOptions = new MessageOptions
             {
-               BackgroundColor = Colors.Peru,
-               Duration = TimeSpan.FromSeconds(3),
-               MessageOptions = new MessageOptions
-               {
-                   Message = "All your data will be deleted in 3 seconds. Application will be closed"
-               },
-               Actions = new List<SnackBarActionOptions>
-               {
-                   new()
-                   {
-                       BackgroundColor = Colors.Black,
-                       ForegroundColor = Colors.Red,
-                       Text = "Confirm and delete immediately",
-                       Font = Font.SystemFontOfSize(20),
-                       Padding = new Thickness(20),
-                       Action = () =>
-                       {
-                           DeleteDbAndCloseApp();
-                           return Task.CompletedTask;
-                       }
-                   },
-                   new()
-                   {
-                       BackgroundColor = Colors.Red,
-                       ForegroundColor = Colors.Black,
-                       Text = "Cancel",
-                       Font = Font.SystemFontOfSize(20),
-                       Padding = new Thickness(20)
-                   }
-               }
-            });
-            if (!shouldCancel) 
+                Message = "All your data will be deleted in 3 seconds. Application will be closed"
+            },
+            Actions = new List<SnackBarActionOptions>
             {
-                DeleteDbAndCloseApp();
+                new()
+                {
+                    BackgroundColor = Colors.Black,
+                    ForegroundColor = Colors.Red,
+                    Text = "Confirm and delete immediately",
+                    Font = Font.SystemFontOfSize(20),
+                    Padding = new Thickness(20),
+                    Action = () =>
+                    {
+                        DeleteDbAndCloseApp();
+                        return Task.CompletedTask;
+                    }
+                },
+                new()
+                {
+                    BackgroundColor = Colors.Red,
+                    ForegroundColor = Colors.Black,
+                    Text = "Cancel",
+                    Font = Font.SystemFontOfSize(20),
+                    Padding = new Thickness(20)
+                }
             }
+        });
+        if (!shouldCancel) 
+        {
+            DeleteDbAndCloseApp();
         }
+    }
 
     private void DeleteDbAndCloseApp()
-    {
+    {*/
         var dbPath = path.GetDatabasePath();
         path.DeleteFile(dbPath);
         Environment.Exit(0);
