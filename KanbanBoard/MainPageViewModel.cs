@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts.Snackbar;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KanbanBoard.Db;
@@ -7,8 +8,10 @@ using KanbanBoard.Models;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
-using Xamarin.CommunityToolkit.UI.Views.Options;
+#if ANDROID || IOS
 using Xamarin.CommunityToolkit.Extensions;
+using Xamarin.CommunityToolkit.UI.Views.Options;
+#endif
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace KanbanBoard;
@@ -100,10 +103,14 @@ public class MainPageViewModel : ObservableObject
         var result = await AlertAsync("Delete card", $"Do you want to delete card \"{card.Name}\"?");
         if (!result) return;
 
-        var shouldCancel = await SnackbarAsync("The card is about to be removed", "Cancel",
-            () => ToastAsync("Task is cancelled"));
-
-        if (!shouldCancel)
+        bool isCancelled = false;
+        Action action = () => isCancelled = true;
+        await SnackbarAsync("The card is about to be removed", "Cancel", action);
+        if (isCancelled)
+        {
+            await ToastAsync("Task is cancelled");
+        }
+        else
         {
             await cardsRepository.DeleteItem(card.Id);
             await UpdateCollection();
@@ -117,13 +124,15 @@ public class MainPageViewModel : ObservableObject
         if (!result) return;
 
         Columns.Remove(columnInfo);
-        var shouldCancel = await SnackbarAsync("The column is removed", "Cancel", () =>
+        bool isCancelled = false;
+        Action action = () =>
         {
             Columns.Add(columnInfo);
-            return Task.CompletedTask;
-        });
+            isCancelled = true;
+        };
+        await SnackbarAsync("The column is removed", "Cancel", action);
 
-        if (!shouldCancel)
+        if (isCancelled)
         {
             await columnsRepository.DeleteColumnWithCards(columnInfo.Column);
         }
@@ -170,18 +179,23 @@ public class MainPageViewModel : ObservableObject
         return Application.Current.MainPage.DisplayPromptAsync(title, message, keyboard: keyboard);
     }
 
-    private static Task<bool> SnackbarAsync(string title, string buttonText, Func<Task> task)
+    private static Task SnackbarAsync(string title, string buttonText, Action action)
     {
-        return Application.Current.MainPage.DisplaySnackBarAsync(title, buttonText, task, TimeSpan.FromSeconds(3));
+        return Application.Current.MainPage.DisplaySnackbar(title, action, buttonText, TimeSpan.FromSeconds(3));
     }
 
     private static Task ToastAsync(string title)
     {
+#if ANDROID || IOS
         return Application.Current.MainPage.DisplayToastAsync(title, 3500);
+#else
+        return Task.CompletedTask;
+#endif
     }
 
     private static Task WipReachedToastAsync(string title)
     {
+#if ANDROID || IOS
         return Application.Current.MainPage.DisplayToastAsync(
            new ToastOptions
            {
@@ -195,5 +209,8 @@ public class MainPageViewModel : ObservableObject
                    Font = Font.SystemFontOfSize(25)
                }
            });
+#else
+        return Task.CompletedTask;
+#endif
     }
 }

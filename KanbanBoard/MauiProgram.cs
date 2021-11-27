@@ -16,10 +16,6 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .ConfigureMauiHandlers(handlers =>
-            {
-                handlers.AddCompatibilityRenderers(typeof(Xamarin.CommunityToolkit.UI.Views.MediaElementRenderer).Assembly);
-            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("FontAwesome5Solid.otf", "FASolid");
