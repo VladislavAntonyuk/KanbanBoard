@@ -55,7 +55,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-        <PackageReference Include="CommunityToolkit.Maui" Version="1.0.0-preview1443" />
+        <PackageReference Include="CommunityToolkit.Maui" Version="1.0.0-preview1459" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
         <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
         <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
