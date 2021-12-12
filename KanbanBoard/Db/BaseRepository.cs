@@ -15,7 +15,7 @@ public abstract class BaseRepository<T> : IBaseRepository<T> where T : new()
         }
     }
 
-    public BaseRepository(IPath path)
+    protected BaseRepository(IPath path)
     {
         var dbPath = path.GetDatabasePath();
         _databaseConnectionHolder = new Lazy<SQLiteConnection>(() => new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.SharedCache));

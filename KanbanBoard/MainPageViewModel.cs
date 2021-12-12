@@ -8,10 +8,6 @@ using KanbanBoard.Models;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
-#if ANDROID || IOS
-using Xamarin.CommunityToolkit.Extensions;
-using Xamarin.CommunityToolkit.UI.Views.Options;
-#endif
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace KanbanBoard;
@@ -186,31 +182,25 @@ public class MainPageViewModel : ObservableObject
 
     private static Task ToastAsync(string title)
     {
-#if ANDROID || IOS
-        return Application.Current.MainPage.DisplayToastAsync(title, 3500);
-#else
+        //return Application.Current.MainPage.DisplayToastAsync(title, 3500);
         return Task.CompletedTask;
-#endif
     }
 
     private static Task WipReachedToastAsync(string title)
     {
-#if ANDROID || IOS
-        return Application.Current.MainPage.DisplayToastAsync(
-           new ToastOptions
-           {
-               BackgroundColor = Colors.Navy,
-               Duration = TimeSpan.FromSeconds(5),
-               MessageOptions = new MessageOptions
-               {
-                   Message = title,
-                   Padding = new Thickness(140),
-                   Foreground = Colors.Teal,
-                   Font = Font.SystemFontOfSize(25)
-               }
-           });
-#else
+        //return Application.Current.MainPage.DisplayToastAsync(
+        //   new ToastOptions
+        //   {
+        //       BackgroundColor = Colors.Navy,
+        //       Duration = TimeSpan.FromSeconds(5),
+        //       MessageOptions = new MessageOptions
+        //       {
+        //           Message = title,
+        //           Padding = new Thickness(140),
+        //           Foreground = Colors.Teal,
+        //           Font = Font.SystemFontOfSize(25)
+        //       }
+        //   });
         return Task.CompletedTask;
-#endif
     }
 }
