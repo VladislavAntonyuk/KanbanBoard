@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
+﻿using Foundation;
 using SQLitePCL;
 
 namespace KanbanBoard;

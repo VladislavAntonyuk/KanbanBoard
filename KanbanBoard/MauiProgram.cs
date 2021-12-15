@@ -1,8 +1,4 @@
-﻿using Microsoft.Maui.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Controls.Xaml;
-using KanbanBoard.Db;
+﻿using KanbanBoard.Db;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 

@@ -5,9 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KanbanBoard.Db;
 using KanbanBoard.Models;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace KanbanBoard;

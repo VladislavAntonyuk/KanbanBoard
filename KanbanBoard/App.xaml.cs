@@ -1,7 +1,5 @@
 ﻿using KanbanBoard.Db;
 using KanbanBoard.Models;
-using Microsoft.Maui;
-using Microsoft.Extensions.DependencyInjection;
 using Application = Microsoft.Maui.Controls.Application;
 
 namespace KanbanBoard;
