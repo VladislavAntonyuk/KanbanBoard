@@ -1,4 +1,4 @@
-The latest changes can be found here: https://github.com/VladislavAntonyuk/MauiSamples
+# The latest changes can be found here: https://github.com/VladislavAntonyuk/MauiSamples
 
 # KanbanBoard
 
