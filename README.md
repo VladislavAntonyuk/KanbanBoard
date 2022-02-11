@@ -1,3 +1,5 @@
+The latest changes can be found here: https://github.com/VladislavAntonyuk/MauiSamples
+
 # KanbanBoard
 
 Article: https://vladislavantonyuk.azurewebsites.net/articles/Creating-Kanban-Board-using-Xamarin-Forms-5
