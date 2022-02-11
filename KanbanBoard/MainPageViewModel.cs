@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts.Snackbar;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KanbanBoard.Db;
@@ -179,25 +180,11 @@ public class MainPageViewModel : ObservableObject
 
     private static Task ToastAsync(string title)
     {
-        //return Application.Current.MainPage.DisplayToastAsync(title, 3500);
-        return Task.CompletedTask;
+        return Toast.Make(title, ToastDuration.Long).Show();
     }
 
     private static Task WipReachedToastAsync(string title)
     {
-        //return Application.Current.MainPage.DisplayToastAsync(
-        //   new ToastOptions
-        //   {
-        //       BackgroundColor = Colors.Navy,
-        //       Duration = TimeSpan.FromSeconds(5),
-        //       MessageOptions = new MessageOptions
-        //       {
-        //           Message = title,
-        //           Padding = new Thickness(140),
-        //           Foreground = Colors.Teal,
-        //           Font = Font.SystemFontOfSize(25)
-        //       }
-        //   });
-        return Task.CompletedTask;
+        return Toast.Make(title, ToastDuration.Long, 26d).Show();
     }
 }

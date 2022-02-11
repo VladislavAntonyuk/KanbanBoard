@@ -1,4 +1,5 @@
-﻿using KanbanBoard.Db;
+﻿using CommunityToolkit.Maui;
+using KanbanBoard.Db;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 
@@ -15,11 +16,12 @@ public static class MauiProgram
             {
                 fonts.AddFont("FontAwesome5Solid.otf", "FASolid");
             });
-        builder.Services.AddTransient<IPath, DbPath>();
-        builder.Services.AddTransient<IColumnsRepository, ColumnsRepository>();
-        builder.Services.AddTransient<ICardsRepository, CardsRepository>();
-        builder.Services.AddTransient<MainPageViewModel>();
-        builder.Services.AddTransient<MainPage>();
+        builder.UseMauiCommunityToolkit();
+        builder.Services.AddSingleton<IPath, DbPath>();
+        builder.Services.AddSingleton<IColumnsRepository, ColumnsRepository>();
+        builder.Services.AddSingleton<ICardsRepository, CardsRepository>();
+        builder.Services.AddSingleton<MainPageViewModel>();
+        builder.Services.AddSingleton<MainPage>();
         return builder.Build();
     }
 }

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Alerts.Snackbar;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 
 namespace KanbanBoard;
 
